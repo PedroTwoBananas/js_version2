@@ -2,8 +2,16 @@ const asyncTimeout = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
 };
 
-const promiseStack = (promises) => {
-  promises.reduce((acc, fn) => acc.then(fn), Promise.resolve());
+const promiseStack = async function (arrayFunction, inOrder) {
+  for (let index = 0; index < arrayFunction.length; index += inOrder) {
+    const elems = [];
+    for (let elemIndex = 0; elemIndex < inOrder; elemIndex++) {
+      if (arrayFunction[elemIndex + index]) {
+        elems.push(arrayFunction[elemIndex + index]);
+      }
+    }
+    await Promise.all(elems.map((fn) => fn()));
+  }
 };
 
 promiseStack(
